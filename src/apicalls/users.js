@@ -3,10 +3,10 @@ const { default: axiosInstance } = require(".");
 export const registerUser = async (payload) => {
     try {
         const response = await axiosInstance.post('https://edu-zap-backend-ddth.vercel.app/api/users/register', payload);
-        console.log("res for register",response.data);
+        //console.log("res for register",response.data);
         return response.data;
     } catch (error) {
-        console.error("Error during user registration:", error);
+        //console.error("Error during user registration:", error);
         return error.response.data;
     }
 }
@@ -22,7 +22,7 @@ export const loginUser = async (payload) => {
 
 export const getUserInfo = async () => {
     try {
-        const response = await axiosInstance.post('/api/users/get-user-info');
+        const response = await axiosInstance.post('https://edu-zap-backend-ddth.vercel.app/api/users/get-user-info');
         return response.data;
     } catch (error) {
         return error.response.data;
