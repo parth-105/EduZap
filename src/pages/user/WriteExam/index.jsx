@@ -65,7 +65,7 @@ function WriteExam() {
       });
 
       let verdict = "Pass";
-      if (correctAnswers.length < examData.passingMarks) {
+      if (totalMarksObtained < examData.passingMarks) {
         verdict = "Fail";
       }
 
@@ -328,7 +328,7 @@ function WriteExam() {
                 <div className="text-lg">Verdict: <span className={`font-bold ${result.verdict === "Pass" ? "text-green-600" : "text-red-600"}`}>{result.verdict}</span></div>
               </div>
               <div className="flex gap-4 mt-6">
-                <button
+                {/* <button
                   className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 text-base shadow"
                   onClick={() => {
                     setView("instructions");
@@ -338,7 +338,7 @@ function WriteExam() {
                   }}
                 >
                   Retake Exam
-                </button>
+                </button> */}
                 <button
                   className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 text-base shadow"
                   onClick={() => {
