@@ -2,8 +2,9 @@ const { default: axiosInstance } = require(".");
 
 export const registerUser = async (payload) => {
     try {
-        const response = await axiosInstance.post('/api/users/register', payload);
+        const response = await axiosInstance.post('https://edu-zap-backend-ddth-p2ahlrz9v-parths-projects-03b328e8.vercel.app/api/users/register', payload);
         return response.data;
+        console.log("res for register",response.data);
     } catch (error) {
         return error.response.data;
     }
