@@ -1,0 +1,12 @@
+{
+	"rewrites": [
+		{
+			"source": "/api/:match*",
+			"destination": "https://edu-zap-backend-ddth-p2ahlrz9v-parths-projects-03b328e8.vercel.app/api/:match*"
+		},
+		{
+			"source": "/(.*)",
+			"destination": "/index.html"
+		}
+	]
+}
