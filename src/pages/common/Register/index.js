@@ -36,13 +36,13 @@ function Register() {
         <meta property="og:title" content="Register | Quiz Application - Free CMAT, NEET, JEE Practice" />
         <meta property="og:description" content="Create your free account to practice for CMAT, NEET, JEE, and other competitive exams. Access online mock tests and quizzes on Quiz Application." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/register" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/register" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Register | Quiz Application - Free CMAT, NEET, JEE Practice" />
         <meta name="twitter:description" content="Create your free account to practice for CMAT, NEET, JEE, and other competitive exams. Access online mock tests and quizzes on Quiz Application." />
-        <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-        <link rel="canonical" href="https://yourdomain.com/register" />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/register" />
       </Helmet>
       <div className="flex justify-center items-center h-screen w-screen bg-primary">
         <div className="card w-400 p-3 bg-white">

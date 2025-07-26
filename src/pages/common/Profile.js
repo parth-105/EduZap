@@ -18,13 +18,13 @@ function Profile() {
         <meta property="og:title" content="Your Profile | Quiz Application - Competitive Exam Practice" />
         <meta property="og:description" content="View your profile, account details, and role on Quiz Application. Practice for CMAT, NEET, JEE, and other competitive exams online." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/profile" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/profile" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Your Profile | Quiz Application - Competitive Exam Practice" />
         <meta name="twitter:description" content="View your profile, account details, and role on Quiz Application. Practice for CMAT, NEET, JEE, and other competitive exams online." />
-        <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-        <link rel="canonical" href="https://yourdomain.com/profile" />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/profile" />
       </Helmet>
       <div className="max-w-xl mx-auto py-10 px-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center gap-6 border border-primary/10">

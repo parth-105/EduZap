@@ -69,13 +69,13 @@ function UserReports() {
         <meta property="og:title" content="Your Exam Reports | Quiz Application - Track Your Progress" />
         <meta property="og:description" content="View your exam reports and analytics for CMAT, NEET, JEE, and other competitive exams. Track your progress and review your answers on Quiz Application." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/user/reports" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/user/reports" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Your Exam Reports | Quiz Application - Track Your Progress" />
         <meta name="twitter:description" content="View your exam reports and analytics for CMAT, NEET, JEE, and other competitive exams. Track your progress and review your answers on Quiz Application." />
-        <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-        <link rel="canonical" href="https://yourdomain.com/user/reports" />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/user/reports" />
       </Helmet>
       <div className="max-w-5xl mx-auto px-2 py-6">
         <PageTitle title="Your Exam Reports" />

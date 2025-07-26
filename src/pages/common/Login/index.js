@@ -35,13 +35,13 @@ function Login() {
         <meta property="og:title" content="Login | Quiz Application - Practice CMAT, NEET, JEE Exams" />
         <meta property="og:description" content="Login to your account to practice for CMAT, NEET, JEE, and other competitive exams. Access free online mock tests and quizzes on Quiz Application." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/login" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/login" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Login | Quiz Application - Practice CMAT, NEET, JEE Exams" />
         <meta name="twitter:description" content="Login to your account to practice for CMAT, NEET, JEE, and other competitive exams. Access free online mock tests and quizzes on Quiz Application." />
-        <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-        <link rel="canonical" href="https://yourdomain.com/login" />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/login" />
       </Helmet>
       <div className="flex justify-center items-center h-screen w-screen bg-primary">
         <div className="card w-400 p-3 bg-white">

@@ -152,7 +152,7 @@ function ProtectedRoute({ children }) {
       </header>
 
       {/* Sidebar (desktop) */}
-      <aside className="hidden md:flex flex-col bg-white border-r w-56 min-h-screen fixed top-0 left-0 z-20 pt-20 shadow-lg">
+      <aside className="hidden md:flex flex-col bg-white border-r w-48 min-h-screen fixed top-0 left-0 z-20 pt-20 shadow-lg">
         <nav className="flex flex-col gap-2 mt-4">
           {menu.map((item, index) => (
             <button
@@ -198,7 +198,7 @@ function ProtectedRoute({ children }) {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col md:pl-56 pt-6 transition-all duration-200">
+      <main className="flex-1 flex flex-col md:pl-48 pt-0 transition-all duration-200">
         <div className="max-w-7xl w-full mx-auto px-2">{children}</div>
       </main>
     </div>

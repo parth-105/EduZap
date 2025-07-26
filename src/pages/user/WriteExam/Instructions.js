@@ -3,20 +3,49 @@ import { useNavigate } from "react-router-dom";
 
 function Instructions({ examData, setView, startTimer }) {
   const navigate = useNavigate();
+  
+  // Convert seconds to minutes and seconds format
+  const formatTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} min : ${seconds} sec`;
+  };
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-2xl mx-auto flex flex-col items-center gap-6">
-      <ul className="flex flex-col gap-2 w-full">
-        <h1 className="text-2xl font-bold text-primary underline mb-2 text-center">Instructions</h1>
-        <li className="text-md">Exam must be completed in <span className="font-semibold">{examData.duration} seconds</span>.</li>
-        <li className="text-md">Exam will be submitted automatically after <span className="font-semibold">{examData.duration} seconds</span>.</li>
-        <li className="text-md">Once submitted, you cannot change your answers.</li>
-        <li className="text-md">Do not refresh the page.</li>
-        <li className="text-md">You can use the <span className="font-bold">"Previous"</span> and <span className="font-bold">"Next"</span> buttons to navigate between questions.</li>
-        <li className="text-md">Total marks of the exam is <span className="font-bold">{examData.totalMarks}</span>.</li>
-        <li className="text-md">Passing marks of the exam is <span className="font-bold">{examData.passingMarks}</span>.</li>
-        <li className="text-md">Marking Scheme: <span className="font-bold">+4</span> for correct, <span className="font-bold">-1</span> for wrong, <span className="font-bold">0</span> for unattempted.</li>
-      </ul>
-      <div className="flex gap-4 mt-4">
+    <div className="bg-white rounded-xl shadow p-6 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold text-primary underline mb-4 text-center">Instructions</h1>
+      
+      <div className="space-y-3 mb-6">
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Exam must be completed in <span className="font-semibold">{formatTime(examData.duration)}</span></p>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Exam will be submitted automatically after <span className="font-semibold">{formatTime(examData.duration)}</span></p>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Once submitted, you cannot change your answers</p>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Do not refresh the page</p>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Use <span className="font-bold">Previous/Next</span> buttons to navigate</p>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Total marks: <span className="font-bold">{examData.totalMarks}</span> | Passing marks: <span className="font-bold">{examData.passingMarks}</span></p>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-primary font-bold">•</span>
+          <p className="text-sm">Marking: <span className="font-bold text-green-600">+4</span> correct, <span className="font-bold text-red-600">-1</span> wrong, <span className="font-bold">0</span> unattempted</p>
+        </div>
+      </div>
+      
+      <div className="flex gap-4 justify-center">
         <button
           className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
           onClick={() => navigate("/")}

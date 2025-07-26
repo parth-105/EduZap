@@ -96,13 +96,13 @@ function Exams() {
         <meta property="og:title" content="Manage Exams | Admin | Quiz Application" />
         <meta property="og:description" content="Admin panel to manage exams for CMAT, NEET, JEE, and other competitive exams. Add, edit, and review online mock tests on Quiz Application." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/admin/exams" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/admin/exams" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Manage Exams | Admin | Quiz Application" />
         <meta name="twitter:description" content="Admin panel to manage exams for CMAT, NEET, JEE, and other competitive exams. Add, edit, and review online mock tests on Quiz Application." />
-        <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-        <link rel="canonical" href="https://yourdomain.com/admin/exams" />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/admin/exams" />
       </Helmet>
       <div>
         <div className="flex justify-between mt-2 items-end">

@@ -123,6 +123,13 @@ function WriteExam() {
     // eslint-disable-next-line
   }, []);
 
+  // Convert seconds to minutes and seconds format
+  const formatTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} min : ${seconds} sec`;
+  };
+
   // Palette color logic
   const getPaletteColor = (idx) => {
     if (selectedOptions[idx] !== undefined) return "bg-green-500 text-white";
@@ -144,28 +151,28 @@ function WriteExam() {
           <meta property="og:title" content="Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE" />
           <meta property="og:description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://yourdomain.com/user/write-exam" />
-          <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+          <meta property="og:url" content="https://edu-zap.vercel.app/user/write-exam" />
+          <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content="Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE" />
           <meta name="twitter:description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
-          <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-          <link rel="canonical" href="https://yourdomain.com/user/write-exam" />
+          <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+          <link rel="canonical" href="https://edu-zap.vercel.app/user/write-exam" />
         </Helmet>
-        <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex flex-col">
+        <div className="w-full h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex flex-col overflow-hidden">
           {/* Timer and Exam Info */}
-          <div className="w-full bg-primary text-white flex flex-wrap justify-between items-center px-2 py-2 sticky top-0 z-20 shadow text-sm">
+          <div className="w-full bg-primary text-white flex flex-wrap justify-between items-center px-2 py-1 sticky top-0 z-20 shadow text-sm mt-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-bold text-lg md:text-xl tracking-wide drop-shadow">{examData.name}</span>
               <span className="hidden sm:inline mx-1">|</span>
               <span>Total: {examData.totalMarks}</span>
               <span>Passing: {examData.passingMarks}</span>
-              <span>Duration: {examData.duration}s</span>
+              <span>Duration: {formatTime(examData.duration)}s</span>
             </div>
-            <div className="flex items-center gap-1 mt-2 sm:mt-0">
+            <div className="flex items-center gap-2 mt-2 sm:mt-0">
               <span>Time Left</span>
-              <div className="bg-black text-primary rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold border-2 border-primary shadow">
-                {secondsLeft}
+              <div className="bg-black text-primary rounded-lg px-4 py-2 flex items-center justify-center text-sm font-bold border-2 border-primary shadow min-w-[120px]">
+                {formatTime(secondsLeft)}
               </div>
             </div>
           </div>
@@ -181,13 +188,13 @@ function WriteExam() {
           {view === "questions" && (
             <div className="flex-1 flex  md:flex-row overflow-hidden">
               {/* Palette (left) */}
-              <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-b from-white to-blue-50 border-r w-60 py-8 px-2 gap-4 h-[calc(100vh-56px)] sticky top-[56px] overflow-y-auto shadow-xl rounded-r-2xl">
-                <div className="font-bold text-lg text-primary mb-4 tracking-wide">Questions</div>
-                <div className="grid grid-cols-4 gap-3 mb-4">
+              <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-b from-white to-blue-50 border-r w-60 py-2 px-2 gap-1 h-[calc(100vh-56px)] sticky top-[56px] overflow-hidden shadow-xl rounded-r-2xl">
+                <div className="font-bold text-sm text-primary mb-2 tracking-wide">Questions</div>
+                <div className="grid grid-cols-4 gap-2 mb-2">
                   {questions.map((q, idx) => (
                     <button
                       key={idx}
-                      className={`w-10 h-10 rounded-full font-bold border text-sm focus:outline-none transition-all duration-150 shadow-md
+                      className={`w-8 h-8 rounded-full font-bold border text-xs focus:outline-none transition-all duration-150 shadow-md
                         ${getPaletteColor(idx)} ${idx === selectedQuestionIndex ? 'ring-2 ring-primary scale-110' : ''}`}
                       onClick={() => setSelectedQuestionIndex(idx)}
                       aria-label={`Go to question ${idx + 1}`}
@@ -197,30 +204,30 @@ function WriteExam() {
                   ))}
                 </div>
                 {/* Legend */}
-                <div className="mt-2 flex flex-col gap-2 text-xs w-full">
-                  <div className="flex items-center gap-2"><span className="inline-block w-4 h-4 bg-green-500 rounded mr-1"></span>Answered</div>
-                  <div className="flex items-center gap-2"><span className="inline-block w-4 h-4 bg-gray-200 rounded mr-1"></span>Not Visited</div>
-                  <div className="flex items-center gap-2"><span className="inline-block w-4 h-4 bg-purple-500 rounded mr-1"></span>Review</div>
-                  <div className="flex items-center gap-2"><span className="inline-block w-4 h-4 bg-primary rounded mr-1"></span>Current</div>
+                <div className="mt-1 flex flex-col gap-1 text-xs w-full">
+                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-green-500 rounded mr-1"></span>Answered</div>
+                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-gray-200 rounded mr-1"></span>Not Visited</div>
+                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-purple-500 rounded mr-1"></span>Review</div>
+                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-primary rounded mr-1"></span>Current</div>
                 </div>
               </div>
 
               {/* Main Question Area */}
-              <div className="flex-1 flex flex-col items-center justify-center p-2 md:p-8 overflow-auto">
-                <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-4 md:p-8 flex flex-col gap-6 border border-primary/10">
-                  <div className="flex flex-col sm:flex-row justify-between items-center mb-2">
-                    <h2 className="text-lg md:text-2xl font-bold mb-2 sm:mb-0 text-primary drop-shadow">
+              <div className="flex-1 flex flex-col items-center justify-center p-1 md:p-2 overflow-hidden">
+                <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-2 md:p-3 flex flex-col gap-1 border border-primary/10">
+                  <div className="flex flex-col sm:flex-row justify-between items-center mb-0.5">
+                    <h2 className="text-base md:text-lg font-bold mb-0.5 sm:mb-0 text-primary drop-shadow">
                       Q{selectedQuestionIndex + 1}: {questions[selectedQuestionIndex].name}
                     </h2>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-1">
                     {Object.keys(questions[selectedQuestionIndex].options).map(
                       (option, index) => {
                         const isSelected = selectedOptions[selectedQuestionIndex] === option;
                         return (
                           <button
                             key={index}
-                            className={`w-full text-left px-4 py-3 rounded-xl border transition-all duration-150 font-semibold text-base shadow-sm
+                            className={`w-full text-left px-2 py-0.5 rounded-xl border transition-all duration-150 font-medium text-sm shadow-sm break-words min-h-[25px] flex items-center
                               ${isSelected ? "bg-primary text-white border-primary scale-105" : "bg-gray-50 border-gray-200 hover:bg-primary/10 hover:scale-105"}
                             `}
                             onClick={() => {
@@ -230,19 +237,27 @@ function WriteExam() {
                               });
                             }}
                           >
-                            <span className="inline-block w-6 h-6 mr-2 rounded-full border-2 border-primary align-middle text-center font-bold bg-white text-primary">
-                              {option}
-                            </span>
-                            {questions[selectedQuestionIndex].options[option]}
+                            <div className="flex items-center gap-3 w-full">
+                              <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 text-center font-bold flex items-center justify-center ${
+                                isSelected 
+                                  ? "border-white bg-white text-black" 
+                                  : "border-primary bg-white text-primary"
+                              }`}>
+                                {option}
+                              </span>
+                              <span className="flex-1 break-words leading-relaxed">
+                                {questions[selectedQuestionIndex].options[option]}
+                              </span>
+                            </div>
                           </button>
                         );
                       }
                     )}
                   </div>
                   {/* Actions */}
-                  <div className="flex flex-wrap justify-between gap-2 mt-2">
+                  <div className="flex flex-wrap justify-between gap-2 mt-0.5">
                     <button
-                      className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 text-xs shadow"
+                      className="bg-purple-500 text-white px-3 py-1.5 rounded-lg hover:bg-purple-600 text-xs shadow"
                       onClick={() => {
                         setMarkedForReview({
                           ...markedForReview,
@@ -253,7 +268,7 @@ function WriteExam() {
                       {markedForReview[selectedQuestionIndex] ? "Unmark Review" : "Mark for Review"}
                     </button>
                     <button
-                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 text-xs shadow"
+                      className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-300 text-xs shadow"
                       onClick={() => {
                         setSelectedOptions({
                           ...selectedOptions,
@@ -265,7 +280,7 @@ function WriteExam() {
                     </button>
                     {selectedQuestionIndex > 0 && (
                       <button
-                        className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 text-xs shadow"
+                        className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-300 text-xs shadow"
                         onClick={() => {
                           setSelectedQuestionIndex(selectedQuestionIndex - 1);
                         }}
@@ -275,7 +290,7 @@ function WriteExam() {
                     )}
                     {selectedQuestionIndex < questions.length - 1 && (
                       <button
-                        className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 text-xs shadow"
+                        className="bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary/90 text-xs shadow"
                         onClick={() => {
                           setSelectedQuestionIndex(selectedQuestionIndex + 1);
                         }}
@@ -285,7 +300,7 @@ function WriteExam() {
                     )}
                     {selectedQuestionIndex === questions.length - 1 && (
                       <button
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-xs shadow"
+                        className="bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 text-xs shadow"
                         onClick={() => {
                           clearInterval(intervalId);
                           setTimeUp(true);

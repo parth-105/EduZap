@@ -57,13 +57,13 @@ function Home() {
         <meta property="og:title" content="Practice CMAT, NEET, JEE, and More | Quiz Application" />
         <meta property="og:description" content="Practice for CMAT, NEET, JEE, JEE Advanced and other competitive exams with free online mock tests and quizzes. Improve your score with instant feedback and detailed explanations." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourdomain.com/" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Practice CMAT, NEET, JEE, and More | Quiz Application" />
         <meta name="twitter:description" content="Practice for CMAT, NEET, JEE, JEE Advanced and other competitive exams with free online mock tests and quizzes." />
-        <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-        <link rel="canonical" href="https://yourdomain.com/" />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/" />
       </Helmet>
       {user && (
         <div className="max-w-6xl mx-auto px-2 py-6">
@@ -98,7 +98,7 @@ function Home() {
                 key={exam._id}
                 className="bg-white rounded-xl shadow hover:shadow-lg transition-shadow duration-200 p-6 flex flex-col gap-3 border border-gray-100 hover:border-primary"
               >
-                <h1 className="text-xl font-bold text-primary mb-1 truncate" title={exam.name}>{exam.name}</h1>
+                <h1 className="text-xl font-bold text-primary mb-1 break-words" title={exam.name}>{exam.name}</h1>
                 <div className="flex flex-wrap gap-2 text-sm text-gray-600">
                   <span className="bg-gray-100 px-2 py-1 rounded">Category: {exam.category}</span>
                   <span className="bg-gray-100 px-2 py-1 rounded">Total: {exam.totalMarks}</span>
