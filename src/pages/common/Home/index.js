@@ -19,29 +19,55 @@ function Home() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.users);
 
+  // Convert seconds to minutes and seconds format
+  const formatTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} min : ${seconds} sec`;
+  };
+
   useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 400);
+    console.log('🔍 Search term changed:', search);
+    const handler = setTimeout(() => {
+      console.log('⏰ Debounced search applied:', search);
+      setDebouncedSearch(search);
+    }, 400);
     return () => clearTimeout(handler);
   }, [search]);
 
   const getExams = async () => {
+    console.log('🔄 Starting to fetch exams...', { page, limit, search: debouncedSearch, category });
     try {
       dispatch(ShowLoading());
+      console.log('⏳ Loading state activated');
+      
       const response = await getAllExams({ page, limit, search: debouncedSearch, category });
+      console.log('📡 API Response received:', response);
+      
       if (response.success) {
+        console.log('✅ Exams loaded successfully:', {
+          count: response.data?.length || 0,
+          total: response.total,
+          page,
+          category: category || 'All'
+        });
         setExams(response.data);
         setTotal(response.total);
       } else {
+        console.error('❌ Failed to load exams:', response.message);
         message.error(response.message);
       }
       dispatch(HideLoading());
+      console.log('🏁 Loading completed');
     } catch (error) {
+      console.error('💥 Error fetching exams:', error);
       dispatch(HideLoading());
       message.error(error.message);
     }
   };
 
   useEffect(() => {
+    console.log('🔄 Triggering exam fetch due to change:', { page, debouncedSearch, category });
     getExams();
     // eslint-disable-next-line
   }, [page, debouncedSearch, category]);
@@ -93,6 +119,7 @@ function Home() {
             </select>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {console.log('🎯 Rendering exam cards:', exams.length, 'exams found')}
             {exams.map((exam) => (
               <div
                 key={exam._id}
@@ -103,11 +130,19 @@ function Home() {
                   <span className="bg-gray-100 px-2 py-1 rounded">Category: {exam.category}</span>
                   <span className="bg-gray-100 px-2 py-1 rounded">Total: {exam.totalMarks}</span>
                   <span className="bg-gray-100 px-2 py-1 rounded">Passing: {exam.passingMarks}</span>
-                  <span className="bg-gray-100 px-2 py-1 rounded">Duration: {exam.duration} sec</span>
+                  <span className="bg-gray-100 px-2 py-1 rounded">Duration: {formatTime(exam.duration)}</span>
                 </div>
                 <button
                   className="mt-4 bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition-colors"
-                  onClick={() => navigate(`/user/write-exam/${exam._id}`)}
+                  onClick={() => {
+                    console.log('🚀 User clicked Start Exam:', {
+                      examId: exam._id,
+                      examName: exam.name,
+                      category: exam.category,
+                      duration: formatTime(exam.duration)
+                    });
+                    navigate(`/user/write-exam/${exam._id}`);
+                  }}
                 >
                   Start Exam
                 </button>
