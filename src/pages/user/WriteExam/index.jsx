@@ -8,6 +8,37 @@ import { HideLoading, ShowLoading } from "../../../redux/loaderSlice";
 import Instructions from "./Instructions";
 import { Helmet } from "react-helmet-async";
 
+// Option Card Component with ScrollArea
+function OptionCard({ option, content, isSelected, onClick }) {
+  return (
+    <div
+      className={`cursor-pointer transition-all duration-200 hover:shadow-md rounded-lg border-2 pt-1 ${
+        isSelected 
+          ? "border-blue-500 bg-blue-50 shadow-md" 
+          : "border-gray-200 hover:border-gray-300 bg-white"
+      }`}
+      onClick={onClick}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className={`flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold text-sm ${
+            isSelected 
+              ? "border-blue-500 bg-blue-500 text-white" 
+              : "border-gray-400 bg-white text-gray-700"
+          }`}
+        >
+          {option}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="max-h-32 overflow-y-auto pr-2">
+            <p className="text-sm leading-relaxed break-words">{content}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WriteExam() {
   const [examData, setExamData] = React.useState(null);
   const [questions = [], setQuestions] = React.useState([]);
@@ -22,6 +53,7 @@ function WriteExam() {
   const [secondsLeft = 0, setSecondsLeft] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
+  const [showMobilePalette, setShowMobilePalette] = useState(false);
   const { user } = useSelector((state) => state.users);
 
   const getExamData = async () => {
@@ -75,7 +107,7 @@ function WriteExam() {
         unattempted,
         verdict,
         totalMarksObtained,
-        selectedOptions, // <-- store user's answers for review
+        selectedOptions,
       };
       setResult(tempResult);
       dispatch(ShowLoading());
@@ -123,141 +155,193 @@ function WriteExam() {
     // eslint-disable-next-line
   }, []);
 
-  // Convert seconds to minutes and seconds format
   const formatTime = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes} min : ${seconds} sec`;
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  // Palette color logic
   const getPaletteColor = (idx) => {
     if (selectedOptions[idx] !== undefined) return "bg-green-500 text-white";
     if (markedForReview[idx]) return "bg-purple-500 text-white";
-    if (idx === selectedQuestionIndex) return "bg-primary text-white";
+    if (idx === selectedQuestionIndex) return "bg-blue-500 text-white";
     return "bg-gray-200 text-gray-700";
   };
 
-  // Responsive: palette as drawer on mobile
-  const [showPalette, setShowPalette] = useState(false);
+  const handleOptionSelect = (option) => {
+    setSelectedOptions({
+      ...selectedOptions,
+      [selectedQuestionIndex]: option,
+    });
+  };
+
+  if (!examData) return null;
+
+  const currentQuestion = questions[selectedQuestionIndex];
 
   return (
-    examData && (
-      <>
-        <Helmet>
-          <title>Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE</title>
-          <meta name="description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
-          <meta name="keywords" content="take exam, online test, CMAT, NEET, JEE, competitive exam, mock test, quiz, exam platform" />
-          <meta property="og:title" content="Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE" />
-          <meta property="og:description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://edu-zap.vercel.app/user/write-exam" />
-          <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE" />
-          <meta name="twitter:description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
-          <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
-          <link rel="canonical" href="https://edu-zap.vercel.app/user/write-exam" />
-        </Helmet>
-        <div className="w-full h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex flex-col overflow-hidden">
-          {/* Timer and Exam Info */}
-          <div className="w-full bg-primary text-white flex flex-wrap justify-between items-center px-2 py-1 sticky top-0 z-20 shadow text-sm mt-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-bold text-lg md:text-xl tracking-wide drop-shadow">{examData.name}</span>
-              <span className="hidden sm:inline mx-1">|</span>
-              <span>Total: {examData.totalMarks}</span>
-              <span>Passing: {examData.passingMarks}</span>
-              <span>Duration: {formatTime(examData.duration)}s</span>
-            </div>
-            <div className="flex items-center gap-2 mt-2 sm:mt-0">
-              <span>Time Left</span>
-              <div className="bg-black text-primary rounded-lg px-4 py-2 flex items-center justify-center text-sm font-bold border-2 border-primary shadow min-w-[120px]">
-                {formatTime(secondsLeft)}
+    <>
+      <Helmet>
+        <title>Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE</title>
+        <meta name="description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
+        <meta name="keywords" content="take exam, online test, CMAT, NEET, JEE, competitive exam, mock test, quiz, exam platform" />
+        <meta property="og:title" content="Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE" />
+        <meta property="og:description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://edu-zap.vercel.app/user/write-exam" />
+        <meta property="og:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Take Online Exam | Quiz Application - Practice CMAT, NEET, JEE" />
+        <meta name="twitter:description" content="Take free online mock tests for CMAT, NEET, JEE, and other competitive exams. Practice with instant feedback and detailed explanations on Quiz Application." />
+        <meta name="twitter:image" content="https://edu-zap.vercel.app/og-image.png" />
+        <link rel="canonical" href="https://edu-zap.vercel.app/user/write-exam" />
+      </Helmet>
+
+      {view === "instructions" && (
+        <Instructions
+          examData={examData}
+          setView={setView}
+          startTimer={startTimer}
+        />
+      )}
+
+      {view === "questions" && (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+          {/* Header */}
+          <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
+            <div className="container mx-auto px-4 py-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div className="flex flex-wrap items-center gap-4 text-sm">
+                  <h1 className="font-bold text-lg text-gray-900">{examData.name}</h1>
+                  <div className="flex gap-4 text-gray-600">
+                    <span>Total: {examData.totalMarks}</span>
+                    <span>Passing: {examData.passingMarks}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="bg-gray-900 text-white px-3 py-1 rounded-lg font-mono text-sm">
+                    {formatTime(secondsLeft)}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {view === "instructions" && (
-            <Instructions
-              examData={examData}
-              setView={setView}
-              startTimer={startTimer}
-            />
-          )}
-
-          {view === "questions" && (
-            <div className="flex-1 flex  md:flex-row overflow-hidden">
-              {/* Palette (left) */}
-              <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-b from-white to-blue-50 border-r w-60 py-2 px-2 gap-1 h-[calc(100vh-56px)] sticky top-[56px] overflow-hidden shadow-xl rounded-r-2xl">
-                <div className="font-bold text-sm text-primary mb-2 tracking-wide">Questions</div>
-                <div className="grid grid-cols-4 gap-2 mb-2">
-                  {questions.map((q, idx) => (
-                    <button
-                      key={idx}
-                      className={`w-8 h-8 rounded-full font-bold border text-xs focus:outline-none transition-all duration-150 shadow-md
-                        ${getPaletteColor(idx)} ${idx === selectedQuestionIndex ? 'ring-2 ring-primary scale-110' : ''}`}
-                      onClick={() => setSelectedQuestionIndex(idx)}
-                      aria-label={`Go to question ${idx + 1}`}
-                    >
-                      {idx + 1}
-                    </button>
-                  ))}
-                </div>
-                {/* Legend */}
-                <div className="mt-1 flex flex-col gap-1 text-xs w-full">
-                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-green-500 rounded mr-1"></span>Answered</div>
-                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-gray-200 rounded mr-1"></span>Not Visited</div>
-                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-purple-500 rounded mr-1"></span>Review</div>
-                  <div className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-primary rounded mr-1"></span>Current</div>
+          <div className="container mx-auto px-4 ">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Question Palette - Desktop */}
+              <div className="hidden lg:block">
+                <div className="sticky top-24 bg-white rounded-lg border shadow-sm">
+                  <div className="p-4 border-b">
+                    <h3 className="text-sm font-semibold">Question Palette</h3>
+                  </div>
+                  <div className="p-4">
+                    <div className="grid grid-cols-5 gap-2 mb-4">
+                      {questions.map((_, idx) => (
+                        <button
+                          key={idx}
+                          className={`w-10 h-10 p-1 rounded  border text-xs font-bold transition-all duration-150  ${
+                            getPaletteColor(idx)
+                          } ${idx === selectedQuestionIndex ? "ring-2 ring-blue-400" : ""}`}
+                          onClick={() => setSelectedQuestionIndex(idx)}
+                        >
+                          {idx + 1}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded"></div>
+                        <span>Answered</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-gray-200 rounded"></div>
+                        <span>Not Visited</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-purple-500 rounded"></div>
+                        <span>Marked for Review</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                        <span>Current</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Main Question Area */}
-              <div className="flex-1 flex flex-col items-center justify-center p-1 md:p-2 overflow-hidden">
-                <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-2 md:p-3 flex flex-col gap-1 border border-primary/10">
-                  <div className="flex flex-col sm:flex-row justify-between items-center mb-0.5">
-                    <h2 className="text-base md:text-lg font-bold mb-0.5 sm:mb-0 text-primary drop-shadow">
-                      Q{selectedQuestionIndex + 1}: {questions[selectedQuestionIndex].name}
-                    </h2>
-                  </div>
-                  <div className="grid grid-cols-1 gap-1">
-                    {Object.keys(questions[selectedQuestionIndex].options).map(
-                      (option, index) => {
-                        const isSelected = selectedOptions[selectedQuestionIndex] === option;
-                        return (
+              {/* Main Content */}
+              <div className="lg:col-span-3">
+                {/* Mobile Question Palette */}
+                <div className="lg:hidden mb-4 bg-white rounded-lg border shadow-sm">
+                  <div className="p-4">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-sm font-medium">Questions</span>
+                      <button 
+                        className="text-blue-600 hover:text-blue-700 text-sm"
+                        onClick={() => setShowMobilePalette(!showMobilePalette)}
+                      >
+                        {showMobilePalette ? "Hide" : "Show"} Palette
+                      </button>
+                    </div>
+                    {showMobilePalette && (
+                      <div className="grid grid-cols-6 gap-2">
+                        {questions.map((_, idx) => (
                           <button
-                            key={index}
-                            className={`w-full text-left px-2 py-0.5 rounded-xl border transition-all duration-150 font-medium text-sm shadow-sm break-words min-h-[25px] flex items-center
-                              ${isSelected ? "bg-primary text-white border-primary scale-105" : "bg-gray-50 border-gray-200 hover:bg-primary/10 hover:scale-105"}
-                            `}
+                            key={idx}
+                            className={`w-8 h-8 rounded border text-xs font-bold transition-all duration-150 ${
+                              getPaletteColor(idx)
+                            }`}
                             onClick={() => {
-                              setSelectedOptions({
-                                ...selectedOptions,
-                                [selectedQuestionIndex]: option,
-                              });
+                              setSelectedQuestionIndex(idx);
+                              setShowMobilePalette(false);
                             }}
                           >
-                            <div className="flex items-center gap-3 w-full">
-                              <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 text-center font-bold flex items-center justify-center ${
-                                isSelected 
-                                  ? "border-white bg-white text-black" 
-                                  : "border-primary bg-white text-primary"
-                              }`}>
-                                {option}
-                              </span>
-                              <span className="flex-1 break-words leading-relaxed">
-                                {questions[selectedQuestionIndex].options[option]}
-                              </span>
-                            </div>
+                            {idx + 1}
                           </button>
-                        );
-                      }
+                        ))}
+                      </div>
                     )}
                   </div>
-                  {/* Actions */}
-                  <div className="flex flex-wrap justify-between gap-2 mt-0.5">
+                </div>
+
+                {/* Question Card */}
+                <div className="bg-white rounded-lg border shadow-sm mb-1">
+                  <div className="p-1 border-b">
+                    <div className="flex justify-between items-start gap-4">
+                      <h2 className="text-lg font-semibold leading-relaxed">
+                        Q{selectedQuestionIndex + 1}: {currentQuestion.name}
+                      </h2>
+                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm font-medium flex-shrink-0">
+                        {selectedQuestionIndex + 1} of {questions.length}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-3 max-h-[70vh] overflow-y-auto">
+                      {Object.entries(currentQuestion.options).map(([option, content]) => (
+                        <OptionCard
+                          key={option}
+                          option={option}
+                          content={content}
+                          isSelected={selectedOptions[selectedQuestionIndex] === option}
+                          onClick={() => handleOptionSelect(option)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-3">
                     <button
-                      className="bg-purple-500 text-white px-3 py-1.5 rounded-lg hover:bg-purple-600 text-xs shadow"
+                      className="flex-1 sm:flex-none bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2"
                       onClick={() => {
                         setMarkedForReview({
                           ...markedForReview,
@@ -265,10 +349,13 @@ function WriteExam() {
                         });
                       }}
                     >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
                       {markedForReview[selectedQuestionIndex] ? "Unmark Review" : "Mark for Review"}
                     </button>
                     <button
-                      className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-300 text-xs shadow"
+                      className="flex-1 sm:flex-none bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2"
                       onClick={() => {
                         setSelectedOptions({
                           ...selectedOptions,
@@ -276,36 +363,45 @@ function WriteExam() {
                         });
                       }}
                     >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
                       Clear
                     </button>
-                    {selectedQuestionIndex > 0 && (
-                      <button
-                        className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-300 text-xs shadow"
-                        onClick={() => {
-                          setSelectedQuestionIndex(selectedQuestionIndex - 1);
-                        }}
-                      >
-                        Previous
-                      </button>
-                    )}
-                    {selectedQuestionIndex < questions.length - 1 && (
-                      <button
-                        className="bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary/90 text-xs shadow"
-                        onClick={() => {
-                          setSelectedQuestionIndex(selectedQuestionIndex + 1);
-                        }}
+                  </div>
+
+                  <div className="flex justify-between gap-3">
+                    <button
+                      className="flex-1 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => setSelectedQuestionIndex(selectedQuestionIndex - 1)}
+                      disabled={selectedQuestionIndex === 0}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Previous
+                    </button>
+                    {selectedQuestionIndex < questions.length - 1 ? (
+                      <button 
+                        className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                        onClick={() => setSelectedQuestionIndex(selectedQuestionIndex + 1)}
                       >
                         Next
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </button>
-                    )}
-                    {selectedQuestionIndex === questions.length - 1 && (
-                      <button
-                        className="bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 text-xs shadow"
+                    ) : (
+                      <button 
+                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center gap-2"
                         onClick={() => {
                           clearInterval(intervalId);
                           setTimeUp(true);
                         }}
                       >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
                         Submit
                       </button>
                     )}
@@ -313,143 +409,132 @@ function WriteExam() {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Result and Review sections remain as previously designed, but polish with more spacing and color */}
-          {view === "result" && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center gap-6 mt-8 border border-primary/10">
-              <h1 className="text-3xl font-bold text-primary mb-2 drop-shadow">RESULT</h1>
-              <div className="w-full border-b-2 border-primary mb-4"></div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-                <div className="bg-blue-50 rounded-xl p-6 text-center">
-                  <div className="font-semibold">Total Marks (Assessment Scheme):</div>
-                  <div className="text-2xl font-bold text-blue-700">{result.totalMarksObtained}</div>
-                </div>
-                <div className="bg-green-50 rounded-xl p-6 text-center">
-                  <div className="font-semibold">Correct Answers:</div>
-                  <div className="text-2xl font-bold text-green-700">{result.correctAnswers.length}</div>
-                </div>
-                <div className="bg-red-50 rounded-xl p-6 text-center">
-                  <div className="font-semibold">Wrong Answers:</div>
-                  <div className="text-2xl font-bold text-red-700">{result.wrongAnswers.length}</div>
-                </div>
-                <div className="bg-yellow-50 rounded-xl p-6 text-center">
-                  <div className="font-semibold">Unattempted:</div>
-                  <div className="text-2xl font-bold text-yellow-700">{result.unattempted.length}</div>
-                </div>
-              </div>
-              <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
-                <div className="text-lg">Passing Marks: <span className="font-bold">{examData.passingMarks}</span></div>
-                <div className="text-lg">Verdict: <span className={`font-bold ${result.verdict === "Pass" ? "text-green-600" : "text-red-600"}`}>{result.verdict}</span></div>
-              </div>
-              <div className="flex gap-4 mt-6">
-                {/* <button
-                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 text-base shadow"
-                  onClick={() => {
-                    setView("instructions");
-                    setSelectedQuestionIndex(0);
-                    setSelectedOptions({});
-                    setSecondsLeft(examData.duration);
-                  }}
-                >
-                  Retake Exam
-                </button> */}
-                <button
-                  className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 text-base shadow"
-                  onClick={() => {
-                    setView("review");
-                  }}
-                >
-                  Review Answers
-                </button>
-              </div>
-              <div className="lottie-animation mt-6">
-                {result.verdict === "Pass" && (
-                  <lottie-player
-                    src="https://assets2.lottiefiles.com/packages/lf20_ya4ycrti.json"
-                    background="transparent"
-                    speed="1"
-                    loop
-                    autoplay
-                  ></lottie-player>
-                )}
-
-                {result.verdict === "Fail" && (
-                  <lottie-player
-                    src="https://assets4.lottiefiles.com/packages/lf20_qp1spzqv.json"
-                    background="transparent"
-                    speed="1"
-                    loop
-                    autoplay
-                  ></lottie-player>
-                )}
-              </div>
-            </div>
-          )}
-
-          {view === "review" && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6 mt-8 border border-primary/10">
-              <div className="text-lg mb-2 font-semibold text-primary">Marking Scheme: Correct +4, Wrong -1, Unattempted 0</div>
-              <div className="text-lg mb-2 font-semibold">Total Marks Obtained: {result.totalMarksObtained}</div>
-              {questions.map((question, index) => {
-                const isCorrect =
-                  question.correctOption === selectedOptions[index];
-                const selected = selectedOptions[index];
-                let mark = 0;
-                if (selected === undefined || selected === null) mark = 0;
-                else if (isCorrect) mark = 4;
-                else mark = -1;
-                return (
-                  <div
-                    className={`flex flex-col gap-1 p-6 rounded-xl border shadow-sm mb-2
-                      ${isCorrect ? "bg-green-50 border-green-200" : (selected ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200")}
-                    `}
-                    key={index}
-                  >
-                    <h1 className="text-lg font-semibold text-primary">
-                      {index + 1} : {question.name}
-                    </h1>
-                    <h1 className="text-md">
-                      Submitted Answer : {selected ? `${selected} - ${question.options[selected]}` : "Unattempted"}
-                    </h1>
-                    <h1 className="text-md">
-                      Correct Answer : {question.correctOption} - {question.options[question.correctOption]}
-                    </h1>
-                    <h1 className="text-md">
-                      Marks for this question: <span className="font-bold">{mark}</span>
-                    </h1>
-                    <h1 className="text-md">
-                      Explanation: {question.explanation ? question.explanation : "No explanation provided."}
-                    </h1>
-                  </div>
-                );
-              })}
-              <div className="flex justify-center gap-4 mt-6">
-                <button
-                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 text-base shadow"
-                  onClick={() => {
-                    navigate("/");
-                  }}
-                >
-                  Close
-                </button>
-                <button
-                  className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 text-base shadow"
-                  onClick={() => {
-                    setView("instructions");
-                    setSelectedQuestionIndex(0);
-                    setSelectedOptions({});
-                    setSecondsLeft(examData.duration);
-                  }}
-                >
-                  Retake Exam
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
-      </>
-    )
+      )}
+
+      {/* Result and Review sections remain as previously designed */}
+      {view === "result" && (
+        <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center gap-6 mt-8 border border-primary/10">
+          <h1 className="text-3xl font-bold text-primary mb-2 drop-shadow">RESULT</h1>
+          <div className="w-full border-b-2 border-primary mb-4"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+            <div className="bg-blue-50 rounded-xl p-6 text-center">
+              <div className="font-semibold">Total Marks (Assessment Scheme):</div>
+              <div className="text-2xl font-bold text-blue-700">{result.totalMarksObtained}</div>
+            </div>
+            <div className="bg-green-50 rounded-xl p-6 text-center">
+              <div className="font-semibold">Correct Answers:</div>
+              <div className="text-2xl font-bold text-green-700">{result.correctAnswers.length}</div>
+            </div>
+            <div className="bg-red-50 rounded-xl p-6 text-center">
+              <div className="font-semibold">Wrong Answers:</div>
+              <div className="text-2xl font-bold text-red-700">{result.wrongAnswers.length}</div>
+            </div>
+            <div className="bg-yellow-50 rounded-xl p-6 text-center">
+              <div className="font-semibold">Unattempted:</div>
+              <div className="text-2xl font-bold text-yellow-700">{result.unattempted.length}</div>
+            </div>
+          </div>
+          <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+            <div className="text-lg">Passing Marks: <span className="font-bold">{examData.passingMarks}</span></div>
+            <div className="text-lg">Verdict: <span className={`font-bold ${result.verdict === "Pass" ? "text-green-600" : "text-red-600"}`}>{result.verdict}</span></div>
+          </div>
+          <div className="flex gap-4 mt-6">
+            <button
+              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 text-base shadow"
+              onClick={() => {
+                setView("review");
+              }}
+            >
+              Review Answers
+            </button>
+          </div>
+          <div className="lottie-animation mt-6">
+            {result.verdict === "Pass" && (
+              <lottie-player
+                src="https://assets2.lottiefiles.com/packages/lf20_ya4ycrti.json"
+                background="transparent"
+                speed="1"
+                loop
+                autoplay
+              ></lottie-player>
+            )}
+
+            {result.verdict === "Fail" && (
+              <lottie-player
+                src="https://assets4.lottiefiles.com/packages/lf20_qp1spzqv.json"
+                background="transparent"
+                speed="1"
+                loop
+                autoplay
+              ></lottie-player>
+            )}
+          </div>
+        </div>
+      )}
+
+      {view === "review" && (
+        <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6 mt-8 border border-primary/10">
+          <div className="text-lg mb-2 font-semibold text-primary">Marking Scheme: Correct +4, Wrong -1, Unattempted 0</div>
+          <div className="text-lg mb-2 font-semibold">Total Marks Obtained: {result.totalMarksObtained}</div>
+          {questions.map((question, index) => {
+            const isCorrect =
+              question.correctOption === selectedOptions[index];
+            const selected = selectedOptions[index];
+            let mark = 0;
+            if (selected === undefined || selected === null) mark = 0;
+            else if (isCorrect) mark = 4;
+            else mark = -1;
+            return (
+              <div
+                className={`flex flex-col gap-1 p-6 rounded-xl border shadow-sm mb-2
+                  ${isCorrect ? "bg-green-50 border-green-200" : (selected ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200")}
+                `}
+                key={index}
+              >
+                <h1 className="text-lg font-semibold text-primary">
+                  {index + 1} : {question.name}
+                </h1>
+                <h1 className="text-md">
+                  Submitted Answer : {selected ? `${selected} - ${question.options[selected]}` : "Unattempted"}
+                </h1>
+                <h1 className="text-md">
+                  Correct Answer : {question.correctOption} - {question.options[question.correctOption]}
+                </h1>
+                <h1 className="text-md">
+                  Marks for this question: <span className="font-bold">{mark}</span>
+                </h1>
+                <h1 className="text-md">
+                  Explanation: {question.explanation ? question.explanation : "No explanation provided."}
+                </h1>
+              </div>
+            );
+          })}
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 text-base shadow"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              Close
+            </button>
+            <button
+              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 text-base shadow"
+              onClick={() => {
+                setView("instructions");
+                setSelectedQuestionIndex(0);
+                setSelectedOptions({});
+                setSecondsLeft(examData.duration);
+              }}
+            >
+              Retake Exam
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

@@ -93,6 +93,7 @@ function ProtectedRoute({ children }) {
         }
       } else {
         message.error(response.message);
+        navigate("/login");
       }
     } catch (error) {
       navigate("/login");
