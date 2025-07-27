@@ -489,7 +489,7 @@ function WriteExam() {
             return (
               <div
                 className={`flex flex-col gap-1 p-6 rounded-xl border shadow-sm mb-2
-                  ${isCorrect ? "bg-green-50 border-green-200" : (selected ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200")}
+                  ${isCorrect ? "bg-green-100 border-green-200" : (selected ? "bg-red-100 border-red-200" : "bg-yellow-100 border-yellow-200")}
                 `}
                 key={index}
               >
@@ -505,7 +505,7 @@ function WriteExam() {
                 <h1 className="text-md">
                   Marks for this question: <span className="font-bold">{mark}</span>
                 </h1>
-                <h1 className="text-md">
+                <h1 className="text-md font-bold ">
                   Explanation: {question.explanation ? question.explanation : "No explanation provided."}
                 </h1>
               </div>
@@ -520,7 +520,7 @@ function WriteExam() {
             >
               Close
             </button>
-            <button
+            {/* <button
               className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 text-base shadow"
               onClick={() => {
                 setView("instructions");
@@ -530,7 +530,7 @@ function WriteExam() {
               }}
             >
               Retake Exam
-            </button>
+            </button> */}
           </div>
         </div>
       )}
